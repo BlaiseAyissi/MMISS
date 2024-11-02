@@ -33,16 +33,7 @@ class pretrain_dataset(Dataset):
         else:
             self.annotation = self.ann_pretrain
             
-        self.transform = transform
-
-
-    def reload_laion(self, epoch):
-        n = epoch%len(self.laion_files)
-        print('loading '+self.laion_files[n])
-        with open(self.laion_files[n],'r') as f:
-            self.ann_laion = json.load(f)      
-        
-        self.annotation = self.ann_pretrain + self.ann_laion    
+        self.transform = transform 
         
     
     def __len__(self):
