@@ -151,7 +151,6 @@ class MISS_Pretrain(nn.Module):
 
         loss_ita = (loss_i2t+loss_t2i)/2
 
-        print(image_feat_m)   
         self._dequeue_and_enqueue(image_feat_m, text_feat_m)
         
 
@@ -255,7 +254,6 @@ class MISS_Pretrain(nn.Module):
         batch_size = image_feats.shape[0]
 
         ptr = int(self.queue_ptr)
-        print(batch_size)
         assert self.queue_size % batch_size == 0  # for simplicity
 
         # replace the keys at ptr (dequeue and enqueue)
