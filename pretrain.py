@@ -62,7 +62,7 @@ def train(model, data_loader, optimizer, epoch, device, config):
         # ramp up alpha in the first 2 epochs
         alpha = config['alpha']*min(1,(epoch*len(data_loader)+i)/(2*len(data_loader))) 
 
-        loss_ita, loss_itm, loss_lm = model(image, caption, alpha = alpha)  
+        loss_ita, loss_itm, loss_lm = model(image, list(caption), alpha = alpha)  
         loss = loss_ita + loss_itm + loss_lm  
 
         loss.backward()
@@ -101,8 +101,9 @@ def main(args, config):
     cap_path = r'/medicat/release/medicat.csv'
 
 
-    new_data_dir = r'/PCM/images'
-    new_cap_path = r'/PCM/pmc_oa.jsonl'
+    #new_data_dir = r'PMC'
+    new_data_dir = 'testIMG'
+    new_cap_path = 'test.jsonl'
 
 
     transform_train = transforms.Compose([
@@ -166,6 +167,11 @@ def main(args, config):
                 'epoch': epoch,
             }
             torch.save(save_obj, os.path.join(args.output_dir, 'checkpoint_%02d.pth'%epoch))  
+
+            #delete previously created checkpoint
+            if epoch > 1:
+                indexDel = int(epoch) - 1
+                os.remove(os.path.join(args.output_dir, 'checkpoint_%02d.pth'%indexDel))
             
             with open(os.path.join(args.output_dir, "log.txt"),"a") as f:
                 f.write(json.dumps(log_stats) + "\n")
@@ -178,12 +184,14 @@ def main(args, config):
 
 
 if __name__ == '__main__':
+    print(torch.version.cuda)
+    print(torch.cuda.is_available())
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', default='./configs/pretrain.yaml')
     parser.add_argument('--output_dir', default='/MISS/missandmedicat_pretrain')  
     parser.add_argument('--checkpoint', default='')    
     parser.add_argument('--evaluate', action='store_true')    
-    parser.add_argument('--device', default='cuda:1')
+    parser.add_argument('--device', default='cuda:0')
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--world_size', default=1, type=int, help='number of distributed processes')    
     parser.add_argument('--dist_url', default='env://', help='url used to set up distributed training')
