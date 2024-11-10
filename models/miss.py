@@ -3,7 +3,7 @@ warnings.filterwarnings("ignore")
 
 from models.vit import VisionTransformer, interpolate_pos_embed
 from models.med import BertConfig, BertModel, BertLMHeadModel
-from transformers import BertTokenizer
+from transformers import BertTokenizer, AutoTokenizer
 
 import torch
 from torch import nn
@@ -177,7 +177,8 @@ def MISS_feature_extractor(pretrained='',**kwargs):
     return model        
 
 def init_tokenizer():
-    tokenizer = BertTokenizer.from_pretrained("/home/cjw/demo/bert-base-uncased")
+    #tokenizer = BertTokenizer.from_pretrained("/home/cjw/demo/bert-base-uncased")
+    tokenizer = AutoTokenizer.from_pretrained("google-bert/bert-base-uncased")
     tokenizer.add_special_tokens({'bos_token':'[DEC]'})
     tokenizer.add_special_tokens({'additional_special_tokens':['[ENC]']})       
     tokenizer.enc_token_id = tokenizer.additional_special_tokens_ids[0]  
