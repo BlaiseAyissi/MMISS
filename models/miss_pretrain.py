@@ -30,7 +30,9 @@ class MISS_Pretrain(nn.Module):
         super().__init__()
         
         #self.visual_encoder, vision_width = create_vit(vit,image_size, vit_grad_ckpt, vit_ckpt_layer, 0) #here to change the image encoder
-        self.visual_encoder, vision_width = mae_vit_base_patch16(vit,image_size, vit_grad_ckpt, vit_ckpt_layer, 0)
+        #self.visual_encoder, vision_width = mae_vit_base_patch16(vit,image_size, vit_grad_ckpt, vit_ckpt_layer, 0)
+        self.visual_encoder, vision_width = mae_vit_base_patch16()
+        
         
         if vit=='base':
             checkpoint = torch.hub.load_state_dict_from_url(
@@ -58,7 +60,8 @@ class MISS_Pretrain(nn.Module):
         
         # create momentum encoders  
         #self.visual_encoder_m, vision_width = create_vit(vit,image_size)  
-        self.visual_encoder, vision_width = mae_vit_base_patch16(vit,image_size)
+        #self.visual_encoder_m, vision_width = mae_vit_base_patch16(vit,image_size)
+        self.visual_encoder_m, vision_width = mae_vit_base_patch16()
 
         self.vision_proj_m = nn.Linear(vision_width, embed_dim)
         self.text_encoder_m = BertModel(config=encoder_config, add_pooling_layer=False)

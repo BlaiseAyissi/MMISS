@@ -14,24 +14,6 @@ import os,glob
 
 class pretrain_dataset(Dataset):
     def __init__(self, ann_file, laion_path, transform): 
-
-        self.ann_pretrain = []
-        for f in ann_file:
-            print('loading '+f)
-            ann = json.load(open(f,'r'))
-            self.ann_pretrain += ann
-        
-        self.laion_path = laion_path
-        if self.laion_path:
-            self.laion_files = glob.glob(os.path.join(laion_path,'*.json'))
-
-            print('loading '+self.laion_files[0])
-            with open(self.laion_files[0],'r') as f:
-                self.ann_laion = json.load(f)  
-
-            self.annotation = self.ann_pretrain + self.ann_laion
-        else:
-            self.annotation = self.ann_pretrain
             
         self.transform = transform 
         
