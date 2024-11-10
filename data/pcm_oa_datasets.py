@@ -13,6 +13,7 @@ from scipy import ndimage
 from scipy.ndimage import zoom
 from PIL import Image
 from torchvision import transforms
+from data.utils import pre_caption
 
 
 class Pcm_oa_dataset(Data.Dataset):
@@ -24,6 +25,7 @@ class Pcm_oa_dataset(Data.Dataset):
             for line in f1:
                 j_line=json.loads(line)
                 self.sample_list.append(j_line['image'])
+                #self.label_csv.append(pre_caption(j_line['caption'],40))
                 self.label_csv.append(j_line['caption'])
 
         #self.list_dir = list_dir    # 索引目录路径  list of the images
@@ -45,5 +47,5 @@ class Pcm_oa_dataset(Data.Dataset):
             data = data/255
         label_path = slice_name     # 按标签索引.csv文件的某行
         caption = self.label_csv[idx]  # 找到图片对应标签
-        return data, caption
+        return data, str(caption)
     

@@ -97,7 +97,7 @@ class MISS_Pretrain(nn.Module):
         with torch.no_grad():
             self.temp.clamp_(0.001,0.5)
         
-        image_embeds = self.visual_encoder(image) 
+        _,_,_,image_embeds = self.visual_encoder(image) 
         #print('image_embeds',image_embeds.shape)
         image_atts = torch.ones(image_embeds.size()[:-1],dtype=torch.long).to(image.device)        
         image_feat = F.normalize(self.vision_proj(image_embeds[:,0,:]),dim=-1)
@@ -114,7 +114,7 @@ class MISS_Pretrain(nn.Module):
         # get momentum features
         with torch.no_grad():
             self._momentum_update()
-            image_embeds_m = self.visual_encoder_m(image) 
+            _,_,_,image_embeds_m = self.visual_encoder_m(image) 
             image_feat_m = F.normalize(self.vision_proj_m(image_embeds_m[:,0,:]),dim=-1)  
             image_feat_all = torch.cat([image_feat_m.t(),self.image_queue.clone().detach()],dim=1)                   
             
@@ -151,7 +151,9 @@ class MISS_Pretrain(nn.Module):
 
         loss_ita = (loss_i2t+loss_t2i)/2
 
-        self._dequeue_and_enqueue(image_feat_m, text_feat_m)        
+        print(image_feat_m)   
+        self._dequeue_and_enqueue(image_feat_m, text_feat_m)
+        
 
         ###============== Image-text Matching ===================###
         encoder_input_ids = text.input_ids.clone()
@@ -253,6 +255,7 @@ class MISS_Pretrain(nn.Module):
         batch_size = image_feats.shape[0]
 
         ptr = int(self.queue_ptr)
+        print(batch_size)
         assert self.queue_size % batch_size == 0  # for simplicity
 
         # replace the keys at ptr (dequeue and enqueue)
